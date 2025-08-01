@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aviator Predictor</title>
+</head>
+<body>
+  <h1>Predict Next Aviator Multiplier</h1>
+  <form id="predictForm">
+    <label for="history">Enter Last 5 Multipliers (comma-separated):</label><br>
+    <input type="text" id="history" name="history" placeholder="1.23, 2.45, 1.98, 4.55, 3.21" size="50">
+    <button type="submit">Predict</button>
+  </form>
+  <div id="result"></div>
+  <script>
+    document.getElementById("predictForm").onsubmit = async function(e) {
+      e.preventDefault();
+      const input = document.getElementById("history").value;
+      const history = input.split(',').map(Number);
+      const res = await fetch("/predict", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({history})
+      });
+      const data = await res.json();
+      document.getElementById("result").innerText = data.prediction ? 
+        "📈 Prediction: " + data.prediction + "x" : "❌ Error: " + data.error;
+    };
+  </script>
+</body>
+</html>
